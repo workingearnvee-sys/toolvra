@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text Repeater · Toolvra</title>
+  <meta name="description" content="Advanced text repeater with separator, prefix/suffix per item, live stats and copy. Clean, fast, no ads.">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(145deg, #f0f5fa 0%, #e6edf4 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+    }
+
+    /* main card – same as hub */
+    .tool-card {
+      max-width: 900px;
+      width: 100%;
+      background: #ffffff;
+      border-radius: 3rem;
+      padding: 2.5rem 2.5rem;
+      box-shadow: 0 20px 40px -12px rgba(0, 20, 40, 0.25), 0 2px 6px rgba(0,0,0,0.05);
+      border: 1px solid rgba(255,255,255,0.7);
+    }
+
+    /* back link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #e9eff7;
+      color: #1e3c5a;
+      text-decoration: none;
+      padding: 0.5rem 1.5rem;
+      border-radius: 40px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      border: 1px solid #cbd6e4;
+      margin-bottom: 1.8rem;
+      transition: 0.15s;
+    }
+    .back-link:hover {
+      background: #dce6f2;
+      border-color: #a0b9d6;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      background: linear-gradient(150deg, #1e2f4b, #2b4b7a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 2rem;
+    }
+
+    /* input groups */
+    .input-group {
+      margin-bottom: 1.8rem;
+      text-align: left;
+    }
+    .input-group label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 0.4rem;
+      margin-left: 0.3rem;
+      color: #1e3c5a;
+      font-size: 1rem;
+    }
+    textarea, input[type="text"], input[type="number"] {
+      width: 100%;
+      padding: 0.9rem 1.2rem;
+      background: #f9fcff;
+      border: 1.5px solid #dde5ef;
+      border-radius: 2rem;
+      font-size: 1rem;
+      color: #152b44;
+      transition: 0.2s;
+    }
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+    textarea:focus, input:focus {
+      outline: none;
+      border-color: #2b4b7a;
+      box-shadow: 0 0 0 3px rgba(43, 75, 122, 0.2);
+    }
+
+    /* count row with slider */
+    .count-row {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    .count-row input[type="number"] {
+      width: 100px;
+      text-align: center;
+    }
+    .count-row input[type="range"] {
+      flex: 1;
+      height: 8px;
+      background: #dde5ef;
+      border-radius: 20px;
+      -webkit-appearance: none;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 24px;
+      height: 24px;
+      background: #2b4b7a;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      border: 2px solid white;
+    }
+
+    /* three columns for separator, prefix, suffix */
+    .three-col {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1.2rem;
+      margin-bottom: 2rem;
+    }
+
+    /* buttons */
+    .button-panel {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin: 2.2rem 0 1.8rem;
+    }
+    .btn {
+      padding: 0.8rem 2rem;
+      border: none;
+      border-radius: 3rem;
+      font-size: 1.1rem;
+      font-weight: 500;
+      background: #1e3a5f;
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      border: 1px solid #3f6190;
+      transition: 0.15s;
+      box-shadow: 0 4px 8px rgba(0,30,60,0.1);
+    }
+    .btn:hover {
+      background: #244c7a;
+      gap: 12px;
+      border-color: #6a93cf;
+    }
+    .btn-success {
+      background: #1f5e4f;
+      border-color: #2f8b76;
+    }
+    .btn-success:hover {
+      background: #287a68;
+    }
+    .btn-neutral {
+      background: #5f6f88;
+      border-color: #7c8fb0;
+    }
+    .btn-neutral:hover {
+      background: #7084a2;
+    }
+
+    /* output area */
+    .output-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.7rem;
+    }
+    .stats {
+      background: #e9eff7;
+      padding: 0.3rem 1.3rem;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      color: #1e3c5a;
+      border: 1px solid #cbd6e4;
+    }
+    #output {
+      background: #f9fcff;
+      border-radius: 2rem;
+      padding: 1.5rem;
+      min-height: 110px;
+      max-height: 250px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      border: 1px solid #dde5ef;
+      color: #152b44;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
+    }
+    .pulse {
+      animation: softPulse 0.3s ease-out;
+    }
+    @keyframes softPulse {
+      0% { background: #f9fcff; }
+      30% { background: #e1efff; }
+      100% { background: #f9fcff; }
+    }
+
+    .copy-feedback {
+      background: #1f5e4f;
+      color: white;
+      padding: 0.2rem 1rem;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      opacity: 0;
+      transition: 0.15s;
+    }
+    .copy-feedback.show { opacity: 1; }
+
+    /* footer */
+    .footer-note {
+      margin-top: 2.5rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid #d0ddee;
+      text-align: center;
+      color: #5f738e;
+      font-size: 0.9rem;
+    }
+
+    /* responsive */
+    @media (max-width: 550px) {
+      .tool-card { padding: 1.8rem; }
+      h1 { font-size: 2.2rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="tool-card">
+  <!-- back to hub -->
+  <a href="index.html" class="back-link">← Back to Toolvra</a>
+
+  <h1>🔁 Text Repeater</h1>
+
+  <!-- main text input -->
+  <div class="input-group">
+    <label>📝 Text to repeat</label>
+    <textarea id="textInput" placeholder="Type or paste your text...">Hello</textarea>
+  </div>
+
+  <!-- count with slider + number -->
+  <div class="input-group">
+    <label>🔢 Repeat count (1–500)</label>
+    <div class="count-row">
+      <input type="number" id="countNumber" min="1" max="500" value="3" step="1">
+      <input type="range" id="countSlider" min="1" max="500" value="3">
+    </div>
+  </div>
+
+  <!-- separator, prefix, suffix per item -->
+  <div class="three-col">
+    <div class="input-group">
+      <label>✂️ Separator (between)</label>
+      <input type="text" id="separatorInput" placeholder="e.g. space, comma" value=" ">
+    </div>
+    <div class="input-group">
+      <label>➕ Before each</label>
+      <input type="text" id="prefixInput" placeholder="prefix per item" value="">
+    </div>
+    <div class="input-group">
+      <label>🔚 After each</label>
+      <input type="text" id="suffixInput" placeholder="suffix per item" value="">
+    </div>
+  </div>
+
+  <!-- action buttons -->
+  <div class="button-panel">
+    <button class="btn" id="generateBtn"><span>⚡</span> Generate</button>
+    <button class="btn btn-success" id="copyBtn"><span>📋</span> Copy</button>
+    <button class="btn btn-neutral" id="clearBtn"><span>🧹</span> Clear</button>
+  </div>
+
+  <!-- output with stats -->
+  <div class="output-header">
+    <span class="stats" id="charStats">📊 0 chars · 0 words</span>
+    <span class="copy-feedback" id="copyFeedback">Copied!</span>
+  </div>
+  <div id="output">✨ Your repeated text will appear here</div>
+
+  <!-- subtle footer -->
+  <div class="footer-note">Toolvra · free online utilities</div>
+</div>
+
+<script>
+  (function() {
+    // DOM elements
+    const textarea = document.getElementById('textInput');
+    const countNumber = document.getElementById('countNumber');
+    const countSlider = document.getElementById('countSlider');
+    const separator = document.getElementById('separatorInput');
+    const prefix = document.getElementById('prefixInput');
+    const suffix = document.getElementById('suffixInput');
+    const generateBtn = document.getElementById('generateBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const outputDiv = document.getElementById('output');
+    const charStats = document.getElementById('charStats');
+    const copyFeedback = document.getElementById('copyFeedback');
+
+    // sync slider & number
+    function syncCountToSlider() { countSlider.value = countNumber.value; }
+    function syncCountToNumber() { countNumber.value = countSlider.value; }
+    countNumber.addEventListener('input', () => {
+      let val = parseInt(countNumber.value, 10);
+      if (isNaN(val) || val < 1) countNumber.value = 1;
+      if (val > 500) countNumber.value = 500;
+      syncCountToSlider();
+    });
+    countSlider.addEventListener('input', syncCountToNumber);
+
+    // generate output with per‑item prefix/suffix
+    function generateOutputText() {
+      let text = textarea.value;
+      let rawCount = parseInt(countNumber.value, 10);
+      if (isNaN(rawCount) || rawCount < 1) rawCount = 1;
+      if (rawCount > 500) rawCount = 500;
+      countNumber.value = rawCount;
+      countSlider.value = rawCount;
+
+      const sep = separator.value || '';     // allow empty separator
+      const pre = prefix.value || '';
+      const suf = suffix.value || '';
+
+      if (rawCount === 0 || text === '') return '';
+
+      const wrapped = pre + text + suf;
+      const items = Array(rawCount).fill(wrapped);
+      return items.join(sep);
+    }
+
+    // update output and stats
+    function updateOutput() {
+      const result = generateOutputText();
+      outputDiv.innerText = result || '␀ (empty)';
+      // count chars & words
+      const chars = result.length;
+      const words = result.trim() ? result.trim().split(/\s+/).length : 0;
+      charStats.innerText = `📊 ${chars} char${chars !== 1 ? 's' : ''} · ${words} word${words !== 1 ? 's' : ''}`;
+      // pulse animation
+      outputDiv.classList.add('pulse');
+      setTimeout(() => outputDiv.classList.remove('pulse'), 300);
+    }
+
+    // generate on button click
+    generateBtn.addEventListener('click', updateOutput);
+
+    // copy to clipboard
+    copyBtn.addEventListener('click', () => {
+      const textToCopy = outputDiv.innerText;
+      if (!textToCopy || textToCopy === '✨ Your repeated text will appear here' || textToCopy === '␀ (empty)') {
+        copyFeedback.innerText = 'Nothing!';
+        copyFeedback.classList.add('show');
+        setTimeout(() => copyFeedback.classList.remove('show'), 800);
+        return;
+      }
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        copyFeedback.innerText = 'Copied!';
+        copyFeedback.classList.add('show');
+        setTimeout(() => copyFeedback.classList.remove('show'), 1200);
+      }).catch(() => alert('Press Ctrl+C to copy'));
+    });
+
+    // clear all fields
+    clearBtn.addEventListener('click', () => {
+      textarea.value = '';
+      countNumber.value = 3;
+      countSlider.value = 3;
+      separator.value = ' ';
+      prefix.value = '';
+      suffix.value = '';
+      outputDiv.innerText = '✨ Cleared — ready for new text';
+      charStats.innerText = '📊 0 chars · 0 words';
+      outputDiv.classList.add('pulse');
+      setTimeout(() => outputDiv.classList.remove('pulse'), 300);
+    });
+
+    // initial load
+    updateOutput();
+
+    // press Enter in any input triggers generate (except shift+enter in textarea for newline)
+    const inputs = [textarea, countNumber, separator, prefix, suffix];
+    inputs.forEach(inp => inp.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        generateBtn.click();
+      }
+    }));
+  })();
+</script>
+</body>
+</html>

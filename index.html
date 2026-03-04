@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Toolvra · professional free tools</title>
+  <meta name="description" content="Toolvra: clean, fast online utilities – text repeater, word counter and more.">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(145deg, #f0f5fa 0%, #e6edf4 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+    }
+
+    .hub {
+      max-width: 1200px;
+      width: 100%;
+      background: #ffffff;
+      border-radius: 3rem;
+      padding: 2.8rem 2.5rem;
+      box-shadow: 0 20px 40px -12px rgba(0, 20, 40, 0.25), 0 2px 6px rgba(0,0,0,0.05);
+      border: 1px solid rgba(255,255,255,0.7);
+    }
+
+    .brand {
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    .brand h1 {
+      font-size: 3.2rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      background: linear-gradient(150deg, #1e2f4b, #2b4b7a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .brand .tagline {
+      font-size: 1.2rem;
+      color: #4a5f7a;
+      font-weight: 350;
+      margin-top: 0.2rem;
+    }
+    .badge {
+      display: inline-block;
+      margin-top: 0.8rem;
+      padding: 0.35rem 1.4rem;
+      background: #e9eff7;
+      border-radius: 40px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #1e3c5a;
+      border: 1px solid #cbd6e4;
+      box-shadow: inset 0 1px 2px white;
+    }
+
+    /* search bar */
+    .search-wrapper {
+      margin: 2rem 0 1.5rem;
+    }
+    #searchInput {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      background: #f9fcff;
+      border: 1.5px solid #dde5ef;
+      border-radius: 3rem;
+      font-size: 1.1rem;
+      color: #152b44;
+      transition: 0.2s;
+      box-shadow: 0 4px 8px rgba(0,30,60,0.05);
+    }
+    #searchInput:focus {
+      outline: none;
+      border-color: #2b4b7a;
+      box-shadow: 0 0 0 3px rgba(43, 75, 122, 0.2);
+    }
+    #searchInput::placeholder {
+      color: #7c8fb0;
+      font-weight: 300;
+    }
+
+    .tool-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin: 2rem 0 2.2rem;
+    }
+
+    .tool-card {
+      background: #f9fcff;
+      border-radius: 2.2rem;
+      padding: 2rem 1.8rem 1.8rem;
+      border: 1px solid #dde5ef;
+      transition: all 0.2s ease;
+      box-shadow: 0 8px 18px -8px rgba(30, 50, 80, 0.12);
+    }
+    .tool-card:hover {
+      transform: translateY(-6px);
+      border-color: #a0b9d6;
+      box-shadow: 0 18px 28px -12px #2b4b7a33;
+      background: #ffffff;
+    }
+    .tool-card h3 {
+      font-size: 2rem;
+      font-weight: 500;
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: #152b44;
+    }
+    .tool-card h3 span {
+      font-size: 2.2rem;
+    }
+    .tool-card p {
+      color: #3e5570;
+      line-height: 1.5;
+      margin-bottom: 2rem;
+      font-size: 1rem;
+    }
+    .tool-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #1e3a5f;
+      color: white;
+      text-decoration: none;
+      padding: 0.8rem 2rem;
+      border-radius: 3rem;
+      font-weight: 500;
+      border: 1px solid #3f6190;
+      transition: 0.15s;
+      box-shadow: 0 4px 8px rgba(0,30,60,0.1);
+    }
+    .tool-link:hover {
+      background: #244c7a;
+      gap: 12px;
+      border-color: #6a93cf;
+    }
+    .tool-link:active {
+      transform: scale(0.97);
+    }
+
+    /* no results message */
+    .no-results {
+      text-align: center;
+      padding: 3rem;
+      color: #5f738e;
+      font-size: 1.2rem;
+      background: #f9fcff;
+      border-radius: 2rem;
+      border: 1px dashed #cbd6e4;
+      grid-column: 1 / -1;
+    }
+
+    .footer {
+      margin-top: 2.8rem;
+      padding-top: 2rem;
+      border-top: 1px solid #d0ddee;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      color: #4f6587;
+      font-size: 0.95rem;
+    }
+    .footer .copyright {
+      font-weight: 450;
+    }
+    .footer-links a {
+      color: #1e3f60;
+      text-decoration: none;
+      margin-left: 2rem;
+      transition: color 0.2s;
+      border-bottom: 1px dotted transparent;
+    }
+    .footer-links a:hover {
+      color: #0b1f33;
+      border-bottom-color: #1e3f60;
+    }
+    .footer-links span {
+      margin-left: 2rem;
+      color: #6d82a3;
+    }
+
+    @media (max-width: 600px) {
+      .hub { padding: 2rem 1.5rem; }
+      .brand h1 { font-size: 2.8rem; }
+      .footer { flex-direction: column; gap: 1rem; align-items: flex-start; }
+      .footer-links a { margin-left: 0; margin-right: 1.5rem; }
+    }
+
+    .dev-note { display: none; }
+  </style>
+</head>
+<body>
+<div class="hub">
+
+  <div class="brand">
+    <h1>⚒️ Toolvra</h1>
+    <div class="tagline">free online utilities · made clean</div>
+    <div class="badge">📦 10 tools ready</div>
+  </div>
+
+  <!-- search bar -->
+  <div class="search-wrapper">
+    <input type="text" id="searchInput" placeholder="🔍 Search tools by name or description..." autocomplete="off">
+  </div>
+
+  <div class="tool-grid" id="toolGrid">
+
+    <div class="tool-card" data-name="text repeater" data-description="repeat any text with custom separator per-item prefix/suffix live counters and dark mode">
+      <h3><span>🔁</span> Text Repeater</h3>
+      <p>Repeat any text with custom separator, per-item prefix/suffix, live counters and dark mode.</p>
+      <a href="text-repeater.html" class="tool-link">open tool →</a>
+    </div>
+
+    <div class="tool-card" data-name="word counter" data-description="count words characters sentences clean interface instant stats and export options">
+      <h3><span>📊</span> Word Counter</h3>
+      <p>Count words, characters, sentences. Clean interface, instant stats, and export options.</p>
+      <a href="word-counter.html" class="tool-link">open tool →</a>
+    </div>
+
+    <div class="tool-card" data-name="character counter" data-description="instantly count characters in any text useful for writing limits and quick analysis">
+      <h3><span>🔢</span> Character Counter</h3>
+      <p>Instantly count characters in any text. Useful for writing limits and quick analysis.</p>
+      <a href="character-counter.html" class="tool-link">open tool →</a>
+    </div>
+
+    <div class="tool-card" data-name="case converter" data-description="convert text between uppercase lowercase and other formats instantly">
+      <h3><span>🔤</span> Case Converter</h3>
+      <p>Convert text between uppercase, lowercase and other formats instantly.</p>
+      <a href="case-converter.html" class="tool-link">open tool →</a>
+    </div>
+
+    <div class="tool-card" data-name="password generator" data-description="create strong random passwords instantly to improve your online security">
+      <h3><span>🔐</span> Password Generator</h3>
+      <p>Create strong random passwords instantly to improve your online security.</p>
+      <a href="password-generator.html" class="tool-link">open tool →</a>
+    </div>
+
+    <div class="tool-card" data-name="random number generator" data-description="generate random numbers between custom ranges instantly">
+      <h3><span>🎲</span> Random Number Generator</h3>
+      <p>Generate random numbers between custom ranges instantly.</p>
+      <a href="random-number.html" class="tool-link">open tool →</a>
+    </div>
+
+    <div class="tool-card" data-name="qr code generator" data-description="create qr codes instantly for links text or other quick sharing needs">
+      <h3><span>📱</span> QR Code Generator</h3>
+      <p>Create QR codes instantly for links, text or other quick sharing needs.</p>
+      <a href="qr-generator.html" class="tool-link">open tool →</a>
+    </div>
+
+    <div class="tool-card" data-name="text reverser" data-description="reverse any text instantly for fun testing or formatting purposes">
+      <h3><span>🔄</span> Text Reverser</h3>
+      <p>Reverse any text instantly for fun, testing or formatting purposes.</p>
+      <a href="text-reverser.html" class="tool-link">open tool →</a>
+    </div>
+
+    <div class="tool-card" data-name="remove extra spaces" data-description="clean messy text by removing unnecessary spaces and formatting instantly">
+      <h3><span>🧹</span> Remove Extra Spaces</h3>
+      <p>Clean messy text by removing unnecessary spaces and formatting instantly.</p>
+      <a href="remove-spaces.html" class="tool-link">open tool →</a>
+    </div>
+
+    <div class="tool-card" data-name="lorem ipsum generator" data-description="generate placeholder text for designs layouts and testing">
+      <h3><span>📝</span> Lorem Ipsum Generator</h3>
+      <p>Generate placeholder text for designs, layouts and testing.</p>
+      <a href="lorem-generator.html" class="tool-link">open tool →</a>
+    </div>
+
+  </div>
+
+  <!-- no results message (hidden by default) -->
+  <div id="noResults" class="no-results" style="display: none;">✨ No tools match your search. Try different keywords.</div>
+
+  <div class="footer">
+    <div class="copyright">© 2026 Toolvra · open source tools</div>
+    <div class="footer-links">
+      <a href="#">about</a>
+      <a href="#">privacy</a>
+      <span>v1.2</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  (function() {
+    const searchInput = document.getElementById('searchInput');
+    const toolGrid = document.getElementById('toolGrid');
+    const noResults = document.getElementById('noResults');
+    const toolCards = Array.from(document.querySelectorAll('.tool-card'));
+
+    function filterTools() {
+      const query = searchInput.value.trim().toLowerCase();
+      let visibleCount = 0;
+
+      toolCards.forEach(card => {
+        const name = card.getAttribute('data-name') || '';
+        const description = card.getAttribute('data-description') || '';
+        // also search in title and p text (just in case)
+        const title = card.querySelector('h3')?.innerText.toLowerCase() || '';
+        const descText = card.querySelector('p')?.innerText.toLowerCase() || '';
+        
+        const matches = query === '' || 
+                        name.includes(query) || 
+                        description.includes(query) || 
+                        title.includes(query) || 
+                        descText.includes(query);
+        
+        if (matches) {
+          card.style.display = '';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      // show/hide no results message
+      if (visibleCount === 0 && query !== '') {
+        noResults.style.display = 'block';
+      } else {
+        noResults.style.display = 'none';
+      }
+    }
+
+    searchInput.addEventListener('input', filterTools);
+
+    // optional: clear search on escape
+    searchInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        searchInput.value = '';
+        filterTools();
+      }
+    });
+  })();
+</script>
+
+<!-- 
+  ============================================================
+  SEARCH FEATURE ADDED:
+  - Type to filter tools by name or description.
+  - Case‑insensitive, updates instantly.
+  - Shows a friendly message when nothing matches.
+  ============================================================
+-->
+</body>
+</html>

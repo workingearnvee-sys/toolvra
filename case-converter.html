@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Case Converter · Toolvra</title>
+  <meta name="description" content="Convert text to uppercase, lowercase, title case, sentence case and more. Live preview, copy & clear.">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(145deg, #f0f5fa 0%, #e6edf4 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+    }
+
+    /* main card – consistent with other tools */
+    .tool-card {
+      max-width: 900px;
+      width: 100%;
+      background: #ffffff;
+      border-radius: 3rem;
+      padding: 2.5rem 2.5rem;
+      box-shadow: 0 20px 40px -12px rgba(0, 20, 40, 0.25), 0 2px 6px rgba(0,0,0,0.05);
+      border: 1px solid rgba(255,255,255,0.7);
+    }
+
+    /* back link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #e9eff7;
+      color: #1e3c5a;
+      text-decoration: none;
+      padding: 0.5rem 1.5rem;
+      border-radius: 40px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      border: 1px solid #cbd6e4;
+      margin-bottom: 1.8rem;
+      transition: 0.15s;
+    }
+    .back-link:hover {
+      background: #dce6f2;
+      border-color: #a0b9d6;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      background: linear-gradient(150deg, #1e2f4b, #2b4b7a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* input group */
+    .input-group {
+      margin-bottom: 2rem;
+      text-align: left;
+    }
+    .input-group label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 0.4rem;
+      margin-left: 0.3rem;
+      color: #1e3c5a;
+      font-size: 1rem;
+    }
+    textarea {
+      width: 100%;
+      padding: 1rem 1.2rem;
+      background: #f9fcff;
+      border: 1.5px solid #dde5ef;
+      border-radius: 2rem;
+      font-size: 1rem;
+      color: #152b44;
+      transition: 0.2s;
+      min-height: 120px;
+      resize: vertical;
+    }
+    textarea:focus {
+      outline: none;
+      border-color: #2b4b7a;
+      box-shadow: 0 0 0 3px rgba(43, 75, 122, 0.2);
+    }
+
+    /* case buttons grid */
+    .case-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0 2rem;
+    }
+    .case-btn {
+      background: #f9fcff;
+      border: 1.5px solid #dde5ef;
+      border-radius: 3rem;
+      padding: 0.8rem 0.5rem;
+      font-size: 1rem;
+      font-weight: 500;
+      color: #1e3a5f;
+      cursor: pointer;
+      transition: 0.1s;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    }
+    .case-btn:hover {
+      background: #ffffff;
+      border-color: #2b4b7a;
+      color: #0b1f33;
+      transform: scale(1.02);
+    }
+    .case-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* output area */
+    .output-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.7rem;
+    }
+    .stats {
+      background: #e9eff7;
+      padding: 0.3rem 1.3rem;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      color: #1e3c5a;
+      border: 1px solid #cbd6e4;
+    }
+    #output {
+      background: #f9fcff;
+      border-radius: 2rem;
+      padding: 1.5rem;
+      min-height: 100px;
+      max-height: 200px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      border: 1px solid #dde5ef;
+      color: #152b44;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
+    }
+
+    /* buttons panel */
+    .button-panel {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin: 2rem 0 1.5rem;
+    }
+    .btn {
+      padding: 0.8rem 2rem;
+      border: none;
+      border-radius: 3rem;
+      font-size: 1.1rem;
+      font-weight: 500;
+      background: #1e3a5f;
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      border: 1px solid #3f6190;
+      transition: 0.15s;
+      box-shadow: 0 4px 8px rgba(0,30,60,0.1);
+    }
+    .btn:hover {
+      background: #244c7a;
+      gap: 12px;
+      border-color: #6a93cf;
+    }
+    .btn-success {
+      background: #1f5e4f;
+      border-color: #2f8b76;
+    }
+    .btn-success:hover {
+      background: #287a68;
+    }
+    .btn-neutral {
+      background: #5f6f88;
+      border-color: #7c8fb0;
+    }
+    .btn-neutral:hover {
+      background: #7084a2;
+    }
+
+    .copy-feedback {
+      background: #1f5e4f;
+      color: white;
+      padding: 0.2rem 1rem;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      opacity: 0;
+      transition: 0.15s;
+      margin-left: 1rem;
+    }
+    .copy-feedback.show { opacity: 1; }
+
+    .footer-note {
+      margin-top: 2.5rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid #d0ddee;
+      text-align: center;
+      color: #5f738e;
+      font-size: 0.9rem;
+    }
+
+    .pulse {
+      animation: softPulse 0.3s ease-out;
+    }
+    @keyframes softPulse {
+      0% { background: #f9fcff; }
+      30% { background: #e1efff; }
+      100% { background: #f9fcff; }
+    }
+
+    @media (max-width: 550px) {
+      .tool-card { padding: 1.8rem; }
+      h1 { font-size: 2.2rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="tool-card">
+  <!-- back link to hub (index.html) -->
+  <a href="index.html" class="back-link">← Back to Toolvra</a>
+
+  <h1>⚡ Case Converter</h1>
+
+  <!-- text input -->
+  <div class="input-group">
+    <label>📝 Enter your text</label>
+    <textarea id="textInput" placeholder="Type or paste text...">the quick brown fox jumps over the lazy dog.</textarea>
+  </div>
+
+  <!-- case transformation buttons -->
+  <div class="case-buttons">
+    <button class="case-btn" id="upperBtn">🔠 UPPERCASE</button>
+    <button class="case-btn" id="lowerBtn">🔡 lowercase</button>
+    <button class="case-btn" id="titleBtn">📖 Title Case</button>
+    <button class="case-btn" id="sentenceBtn">📝 Sentence case</button>
+    <button class="case-btn" id="capitalizedBtn">✨ Capitalized</button>
+    <button class="case-btn" id="alternatingBtn">🎭 aLtErNaTiNg</button>
+  </div>
+
+  <!-- output area with stats -->
+  <div class="output-header">
+    <span class="stats" id="charStats">📊 0 characters</span>
+    <span class="copy-feedback" id="copyFeedback">Copied!</span>
+  </div>
+  <div id="output">✨ Your converted text will appear here</div>
+
+  <!-- action buttons -->
+  <div class="button-panel">
+    <button class="btn btn-success" id="copyBtn"><span>📋</span> Copy Output</button>
+    <button class="btn btn-neutral" id="clearBtn"><span>🧹</span> Clear All</button>
+  </div>
+
+  <!-- footer -->
+  <div class="footer-note">Toolvra · free online utilities</div>
+</div>
+
+<script>
+  (function() {
+    // DOM elements
+    const textarea = document.getElementById('textInput');
+    const outputDiv = document.getElementById('output');
+    const charStats = document.getElementById('charStats');
+    const copyBtn = document.getElementById('copyBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const copyFeedback = document.getElementById('copyFeedback');
+
+    // case buttons
+    const upperBtn = document.getElementById('upperBtn');
+    const lowerBtn = document.getElementById('lowerBtn');
+    const titleBtn = document.getElementById('titleBtn');
+    const sentenceBtn = document.getElementById('sentenceBtn');
+    const capitalizedBtn = document.getElementById('capitalizedBtn');
+    const alternatingBtn = document.getElementById('alternatingBtn');
+
+    // helper: update output and stats
+    function setOutput(text) {
+      outputDiv.innerText = text;
+      // update character count
+      const len = text.length;
+      charStats.innerText = `📊 ${len} character${len !== 1 ? 's' : ''}`;
+      // pulse output
+      outputDiv.classList.add('pulse');
+      setTimeout(() => outputDiv.classList.remove('pulse'), 300);
+    }
+
+    // conversion functions
+    function toUpperCase() {
+      setOutput(textarea.value.toUpperCase());
+    }
+    function toLowerCase() {
+      setOutput(textarea.value.toLowerCase());
+    }
+    function toTitleCase() {
+      const text = textarea.value;
+      // simple title case: capitalise first letter of each word (lowercase the rest)
+      const result = text.replace(/\b\w+/g, word => 
+        word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+      );
+      setOutput(result);
+    }
+    function toSentenceCase() {
+      const text = textarea.value;
+      // sentence case: capitalise first letter of each sentence (after .!? and trim)
+      const result = text.replace(/(^|[.!?]\s+)(\w)/g, (match, p1, p2) => p1 + p2.toUpperCase());
+      setOutput(result);
+    }
+    function toCapitalized() {
+      const text = textarea.value;
+      // Capitalized: first letter of each word uppercase, rest lowercase (like title but also handles first word)
+      const result = text.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+      setOutput(result);
+    }
+    function toAlternating() {
+      const text = textarea.value;
+      let result = '';
+      let upper = true;
+      for (let i = 0; i < text.length; i++) {
+        const ch = text[i];
+        if (ch.match(/[a-zA-Z]/)) {
+          result += upper ? ch.toUpperCase() : ch.toLowerCase();
+          upper = !upper;
+        } else {
+          result += ch;
+        }
+      }
+      setOutput(result);
+    }
+
+    // attach event listeners
+    upperBtn.addEventListener('click', toUpperCase);
+    lowerBtn.addEventListener('click', toLowerCase);
+    titleBtn.addEventListener('click', toTitleCase);
+    sentenceBtn.addEventListener('click', toSentenceCase);
+    capitalizedBtn.addEventListener('click', toCapitalized);
+    alternatingBtn.addEventListener('click', toAlternating);
+
+    // copy output
+    copyBtn.addEventListener('click', () => {
+      const textToCopy = outputDiv.innerText;
+      if (!textToCopy || textToCopy === '✨ Your converted text will appear here') {
+        copyFeedback.innerText = 'Nothing!';
+        copyFeedback.classList.add('show');
+        setTimeout(() => copyFeedback.classList.remove('show'), 800);
+        return;
+      }
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        copyFeedback.innerText = 'Copied!';
+        copyFeedback.classList.add('show');
+        setTimeout(() => copyFeedback.classList.remove('show'), 1200);
+      }).catch(() => alert('Press Ctrl+C to copy'));
+    });
+
+    // clear all: clear textarea and output
+    clearBtn.addEventListener('click', () => {
+      textarea.value = '';
+      setOutput('✨ Cleared — ready for new text');
+    });
+
+    // initial output (optional: show something, maybe a preview of default text)
+    // We'll just set output to an empty string initially? Let's keep the placeholder.
+    // But also we could apply a default conversion to show it works.
+    // We'll leave output as placeholder, but stats 0.
+    charStats.innerText = `📊 0 characters`;
+
+    // You can also add live update if you want, but we only convert on button click.
+  })();
+</script>
+
+<!-- 
+  ============================================================
+  TO LINK THIS TOOL FROM THE HUB (index.html):
+  Add this line inside the tool grid:
+    <a href="case-converter.html">Case Converter</a>
+  Make sure this file is saved as "case-converter.html"
+  ============================================================
+-->
+</body>
+</html>
+```

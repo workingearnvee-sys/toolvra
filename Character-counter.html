@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Character Counter · Toolvra</title>
+  <meta name="description" content="Count characters with/without spaces, words, lines – live stats, copy & clear. Fast and clean.">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(145deg, #f0f5fa 0%, #e6edf4 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+    }
+
+    /* main card – same as hub & other tools */
+    .tool-card {
+      max-width: 900px;
+      width: 100%;
+      background: #ffffff;
+      border-radius: 3rem;
+      padding: 2.5rem 2.5rem;
+      box-shadow: 0 20px 40px -12px rgba(0, 20, 40, 0.25), 0 2px 6px rgba(0,0,0,0.05);
+      border: 1px solid rgba(255,255,255,0.7);
+    }
+
+    /* back link – points to hub (index.html) */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #e9eff7;
+      color: #1e3c5a;
+      text-decoration: none;
+      padding: 0.5rem 1.5rem;
+      border-radius: 40px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      border: 1px solid #cbd6e4;
+      margin-bottom: 1.8rem;
+      transition: 0.15s;
+    }
+    .back-link:hover {
+      background: #dce6f2;
+      border-color: #a0b9d6;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      background: linear-gradient(150deg, #1e2f4b, #2b4b7a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* input group */
+    .input-group {
+      margin-bottom: 2rem;
+      text-align: left;
+    }
+    .input-group label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 0.4rem;
+      margin-left: 0.3rem;
+      color: #1e3c5a;
+      font-size: 1rem;
+    }
+    textarea {
+      width: 100%;
+      padding: 1rem 1.2rem;
+      background: #f9fcff;
+      border: 1.5px solid #dde5ef;
+      border-radius: 2rem;
+      font-size: 1rem;
+      color: #152b44;
+      transition: 0.2s;
+      min-height: 150px;
+      resize: vertical;
+    }
+    textarea:focus {
+      outline: none;
+      border-color: #2b4b7a;
+      box-shadow: 0 0 0 3px rgba(43, 75, 122, 0.2);
+    }
+
+    /* stats grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1.2rem;
+      margin: 2rem 0 1.8rem;
+    }
+    .stat-item {
+      background: #f9fcff;
+      border: 1px solid #dde5ef;
+      border-radius: 1.8rem;
+      padding: 1.2rem 0.5rem;
+      text-align: center;
+      transition: 0.1s;
+    }
+    .stat-item:hover {
+      border-color: #a0b9d6;
+      background: #ffffff;
+    }
+    .stat-value {
+      font-size: 2.2rem;
+      font-weight: 600;
+      color: #1e3a5f;
+      line-height: 1.2;
+    }
+    .stat-label {
+      font-size: 0.85rem;
+      color: #4f6587;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* extra info row */
+    .extra-info {
+      background: #e9eff7;
+      border-radius: 2rem;
+      padding: 1rem 1.5rem;
+      margin-bottom: 2rem;
+      border: 1px solid #cbd6e4;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      color: #1e3c5a;
+    }
+    .copy-feedback {
+      background: #1f5e4f;
+      color: white;
+      padding: 0.2rem 1rem;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      opacity: 0;
+      transition: 0.15s;
+    }
+    .copy-feedback.show { opacity: 1; }
+
+    /* buttons */
+    .button-panel {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin: 2rem 0 1.5rem;
+    }
+    .btn {
+      padding: 0.8rem 2rem;
+      border: none;
+      border-radius: 3rem;
+      font-size: 1.1rem;
+      font-weight: 500;
+      background: #1e3a5f;
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      border: 1px solid #3f6190;
+      transition: 0.15s;
+      box-shadow: 0 4px 8px rgba(0,30,60,0.1);
+    }
+    .btn:hover {
+      background: #244c7a;
+      gap: 12px;
+      border-color: #6a93cf;
+    }
+    .btn-success {
+      background: #1f5e4f;
+      border-color: #2f8b76;
+    }
+    .btn-success:hover {
+      background: #287a68;
+    }
+    .btn-neutral {
+      background: #5f6f88;
+      border-color: #7c8fb0;
+    }
+    .btn-neutral:hover {
+      background: #7084a2;
+    }
+
+    /* footer */
+    .footer-note {
+      margin-top: 2.5rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid #d0ddee;
+      text-align: center;
+      color: #5f738e;
+      font-size: 0.9rem;
+    }
+
+    /* pulse animation */
+    .pulse {
+      animation: softPulse 0.3s ease-out;
+    }
+    @keyframes softPulse {
+      0% { background: #f9fcff; }
+      30% { background: #e1efff; }
+      100% { background: #f9fcff; }
+    }
+
+    @media (max-width: 550px) {
+      .tool-card { padding: 1.8rem; }
+      h1 { font-size: 2.2rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="tool-card">
+  <!-- back link: points to main hub (index.html) – make sure your hub is named index.html -->
+  <a href="index.html" class="back-link">← Back to Toolvra</a>
+
+  <h1>🔤 Character Counter</h1>
+
+  <!-- text input -->
+  <div class="input-group">
+    <label>📝 Type or paste your text</label>
+    <textarea id="textInput" placeholder="Start typing...">Hello world! This is a sample text.</textarea>
+  </div>
+
+  <!-- stats grid -->
+  <div class="stats-grid" id="statsGrid">
+    <div class="stat-item">
+      <div class="stat-value" id="charsWithSpaces">0</div>
+      <div class="stat-label">Chars (with spaces)</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value" id="charsNoSpaces">0</div>
+      <div class="stat-label">Chars (no spaces)</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value" id="words">0</div>
+      <div class="stat-label">Words</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value" id="lines">0</div>
+      <div class="stat-label">Lines</div>
+    </div>
+  </div>
+
+  <!-- extra row with copy feedback -->
+  <div class="extra-info">
+    <span>📊 counts update as you type</span>
+    <span class="copy-feedback" id="copyFeedback">Copied!</span>
+  </div>
+
+  <!-- buttons -->
+  <div class="button-panel">
+    <button class="btn" id="countBtn"><span>⚡</span> Count</button>
+    <button class="btn btn-success" id="copyTextBtn"><span>📋</span> Copy Text</button>
+    <button class="btn btn-neutral" id="clearBtn"><span>🧹</span> Clear</button>
+  </div>
+
+  <!-- footer -->
+  <div class="footer-note">Toolvra · free online utilities</div>
+</div>
+
+<script>
+  (function() {
+    // DOM elements
+    const textarea = document.getElementById('textInput');
+    const charsWithSpacesSpan = document.getElementById('charsWithSpaces');
+    const charsNoSpacesSpan = document.getElementById('charsNoSpaces');
+    const wordsSpan = document.getElementById('words');
+    const linesSpan = document.getElementById('lines');
+    const countBtn = document.getElementById('countBtn');
+    const copyTextBtn = document.getElementById('copyTextBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const copyFeedback = document.getElementById('copyFeedback');
+
+    // update all stats
+    function updateStats() {
+      const text = textarea.value;
+
+      // characters with spaces
+      charsWithSpacesSpan.innerText = text.length;
+
+      // characters without spaces
+      charsNoSpacesSpan.innerText = text.replace(/\s+/g, '').length;
+
+      // words
+      const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+      wordsSpan.innerText = words;
+
+      // lines (split by newline, count non-empty lines? Or total lines? Let's count all lines, even empty ones.)
+      const lines = text.split(/\r\n|\r|\n/).length;
+      linesSpan.innerText = lines;
+
+      // pulse effect on grid
+      document.getElementById('statsGrid').classList.add('pulse');
+      setTimeout(() => document.getElementById('statsGrid').classList.remove('pulse'), 300);
+    }
+
+    // initial update
+    updateStats();
+
+    // live update on input
+    textarea.addEventListener('input', updateStats);
+
+    // count button (manual trigger, but live is already active – kept for consistency)
+    countBtn.addEventListener('click', updateStats);
+
+    // copy text button
+    copyTextBtn.addEventListener('click', () => {
+      const textToCopy = textarea.value;
+      if (!textToCopy) {
+        copyFeedback.innerText = 'Nothing!';
+        copyFeedback.classList.add('show');
+        setTimeout(() => copyFeedback.classList.remove('show'), 800);
+        return;
+      }
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        copyFeedback.innerText = 'Copied!';
+        copyFeedback.classList.add('show');
+        setTimeout(() => copyFeedback.classList.remove('show'), 1200);
+      }).catch(() => alert('Press Ctrl+C to copy'));
+    });
+
+    // clear button
+    clearBtn.addEventListener('click', () => {
+      textarea.value = '';
+      updateStats();
+      textarea.focus();
+    });
+
+    // optional: Ctrl+Enter to trigger count? not necessary.
+  })();
+</script>
+
+<!-- 
+  ============================================================
+  WHAT TO ADD IN HREF COMMAND:
+  - In the hub page (index.html), to link to this tool, add:
+      <a href="character-counter.html">Character Counter</a>
+    (make sure this file is saved as "character-counter.html")
+  - In this tool, the back link is already set to "index.html".
+  - For other tools, use the same pattern: href="tool-name.html"
+  ============================================================
+-->
+</body>
+</html>
+```

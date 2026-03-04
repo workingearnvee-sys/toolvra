@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lorem Ipsum Generator · Toolvra</title>
+  <meta name="description" content="Generate customizable lorem ipsum placeholder text. Control paragraphs, sentences, and more.">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(145deg, #f0f5fa 0%, #e6edf4 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+    }
+
+    .tool-card {
+      max-width: 900px;
+      width: 100%;
+      background: #ffffff;
+      border-radius: 3rem;
+      padding: 2.5rem 2.5rem;
+      box-shadow: 0 20px 40px -12px rgba(0, 20, 40, 0.25), 0 2px 6px rgba(0,0,0,0.05);
+      border: 1px solid rgba(255,255,255,0.7);
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #e9eff7;
+      color: #1e3c5a;
+      text-decoration: none;
+      padding: 0.5rem 1.5rem;
+      border-radius: 40px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      border: 1px solid #cbd6e4;
+      margin-bottom: 1.8rem;
+      transition: 0.15s;
+    }
+    .back-link:hover {
+      background: #dce6f2;
+      border-color: #a0b9d6;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      background: linear-gradient(150deg, #1e2f4b, #2b4b7a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* controls */
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+    .control-group {
+      flex: 1 1 200px;
+    }
+    .control-group label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 0.3rem;
+      margin-left: 0.3rem;
+      color: #1e3c5a;
+      font-size: 0.9rem;
+    }
+    .slider-row {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    .slider-row input[type="range"] {
+      flex: 1;
+      height: 8px;
+      background: #dde5ef;
+      border-radius: 20px;
+      -webkit-appearance: none;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 22px;
+      height: 22px;
+      background: #2b4b7a;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      border: 2px solid white;
+    }
+    .slider-row input[type="number"] {
+      width: 70px;
+      text-align: center;
+      padding: 0.5rem;
+      background: #f9fcff;
+      border: 1.5px solid #dde5ef;
+      border-radius: 2rem;
+      font-size: 1rem;
+      color: #152b44;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      background: #f9fcff;
+      border: 1px solid #dde5ef;
+      border-radius: 2rem;
+      padding: 0.6rem 1.2rem;
+      margin-top: 1.5rem;
+    }
+    .checkbox-group input[type="checkbox"] {
+      width: 1.2rem;
+      height: 1.2rem;
+      accent-color: #2b4b7a;
+    }
+    .checkbox-group label {
+      font-weight: 500;
+      color: #1e3c5a;
+    }
+
+    /* output area */
+    .output-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.7rem;
+    }
+    .stats {
+      background: #e9eff7;
+      padding: 0.3rem 1.3rem;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      color: #1e3c5a;
+      border: 1px solid #cbd6e4;
+    }
+    #output {
+      background: #f9fcff;
+      border-radius: 2rem;
+      padding: 1.5rem;
+      min-height: 150px;
+      max-height: 300px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      border: 1px solid #dde5ef;
+      color: #152b44;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
+      line-height: 1.5;
+    }
+
+    .button-panel {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin: 2rem 0 1.5rem;
+    }
+    .btn {
+      padding: 0.8rem 2rem;
+      border: none;
+      border-radius: 3rem;
+      font-size: 1.1rem;
+      font-weight: 500;
+      background: #1e3a5f;
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      border: 1px solid #3f6190;
+      transition: 0.15s;
+      box-shadow: 0 4px 8px rgba(0,30,60,0.1);
+    }
+    .btn:hover {
+      background: #244c7a;
+      gap: 12px;
+      border-color: #6a93cf;
+    }
+    .btn-success {
+      background: #1f5e4f;
+      border-color: #2f8b76;
+    }
+    .btn-success:hover {
+      background: #287a68;
+    }
+    .btn-neutral {
+      background: #5f6f88;
+      border-color: #7c8fb0;
+    }
+    .btn-neutral:hover {
+      background: #7084a2;
+    }
+
+    .copy-feedback {
+      background: #1f5e4f;
+      color: white;
+      padding: 0.2rem 1rem;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      opacity: 0;
+      transition: 0.15s;
+      margin-left: 1rem;
+    }
+    .copy-feedback.show { opacity: 1; }
+
+    .footer-note {
+      margin-top: 2.5rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid #d0ddee;
+      text-align: center;
+      color: #5f738e;
+      font-size: 0.9rem;
+    }
+
+    .pulse {
+      animation: softPulse 0.3s ease-out;
+    }
+    @keyframes softPulse {
+      0% { background: #f9fcff; }
+      30% { background: #e1efff; }
+      100% { background: #f9fcff; }
+    }
+
+    @media (max-width: 550px) {
+      .tool-card { padding: 1.8rem; }
+      h1 { font-size: 2.2rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="tool-card">
+  <!-- back link to hub -->
+  <a href="index.html" class="back-link">← Back to Toolvra</a>
+
+  <h1>📄 Lorem Ipsum Generator</h1>
+
+  <!-- controls -->
+  <div class="controls">
+    <div class="control-group">
+      <label for="paragraphs">Paragraphs</label>
+      <div class="slider-row">
+        <input type="range" id="paragraphSlider" min="1" max="10" value="1">
+        <input type="number" id="paragraphNumber" min="1" max="10" value="1">
+      </div>
+    </div>
+    <div class="control-group">
+      <label for="sentences">Sentences per paragraph</label>
+      <div class="slider-row">
+        <input type="range" id="sentencesSlider" min="1" max="10" value="5">
+        <input type="number" id="sentencesNumber" min="1" max="10" value="5">
+      </div>
+    </div>
+  </div>
+
+  <!-- checkbox for classic start -->
+  <div class="checkbox-group">
+    <input type="checkbox" id="classicStart" checked>
+    <label for="classicStart">Start with "Lorem ipsum..." (first paragraph only)</label>
+  </div>
+
+  <!-- output area with stats -->
+  <div class="output-header">
+    <span class="stats" id="wordStats">📊 0 words · 0 characters</span>
+    <span class="copy-feedback" id="copyFeedback">Copied!</span>
+  </div>
+  <div id="output">✨ Your generated text will appear here</div>
+
+  <!-- action buttons -->
+  <div class="button-panel">
+    <button class="btn" id="generateBtn"><span>⚡</span> Generate</button>
+    <button class="btn btn-success" id="copyBtn"><span>📋</span> Copy</button>
+    <button class="btn btn-neutral" id="clearBtn"><span>🧹</span> Reset to Default</button>
+  </div>
+
+  <!-- footer -->
+  <div class="footer-note">Toolvra · free online utilities</div>
+</div>
+
+<script>
+  (function() {
+    // DOM elements
+    const paragraphSlider = document.getElementById('paragraphSlider');
+    const paragraphNumber = document.getElementById('paragraphNumber');
+    const sentencesSlider = document.getElementById('sentencesSlider');
+    const sentencesNumber = document.getElementById('sentencesNumber');
+    const classicCheck = document.getElementById('classicStart');
+    const outputDiv = document.getElementById('output');
+    const wordStats = document.getElementById('wordStats');
+    const generateBtn = document.getElementById('generateBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const copyFeedback = document.getElementById('copyFeedback');
+
+    // sync slider + number
+    function syncParagraphs() {
+      paragraphNumber.value = paragraphSlider.value;
+    }
+    function syncParagraphsFromNumber() {
+      let val = parseInt(paragraphNumber.value, 10);
+      if (isNaN(val) || val < 1) paragraphNumber.value = 1;
+      if (val > 10) paragraphNumber.value = 10;
+      paragraphSlider.value = paragraphNumber.value;
+    }
+    paragraphSlider.addEventListener('input', syncParagraphs);
+    paragraphNumber.addEventListener('input', syncParagraphsFromNumber);
+
+    function syncSentences() {
+      sentencesNumber.value = sentencesSlider.value;
+    }
+    function syncSentencesFromNumber() {
+      let val = parseInt(sentencesNumber.value, 10);
+      if (isNaN(val) || val < 1) sentencesNumber.value = 1;
+      if (val > 10) sentencesNumber.value = 10;
+      sentencesSlider.value = sentencesNumber.value;
+    }
+    sentencesSlider.addEventListener('input', syncSentences);
+    sentencesNumber.addEventListener('input', syncSentencesFromNumber);
+
+    // word pool – classic lorem ipsum words (split from standard passage)
+    const baseWords = [
+      "lorem", "ipsum", "dolor", "sit", "amet", "consectetur", "adipiscing", "elit", 
+      "sed", "do", "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore", 
+      "magna", "aliqua", "ut", "enim", "ad", "minim", "veniam", "quis", "nostrud", 
+      "exercitation", "ullamco", "laboris", "nisi", "ut", "aliquip", "ex", "ea", 
+      "commodo", "consequat", "duis", "aute", "irure", "dolor", "in", "reprehenderit", 
+      "in", "voluptate", "velit", "esse", "cillum", "dolore", "eu", "fugiat", "nulla", 
+      "pariatur", "excepteur", "sint", "occaecat", "cupidatat", "non", "proident", 
+      "sunt", "in", "culpa", "qui", "officia", "deserunt", "mollit", "anim", "id", 
+      "est", "laborum"
+    ];
+
+    // generate a random sentence (8–15 words)
+    function generateSentence() {
+      const length = Math.floor(Math.random() * 8) + 8; // 8 to 15 words
+      let words = [];
+      for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * baseWords.length);
+        words.push(baseWords[randomIndex]);
+      }
+      // capitalize first letter
+      let sentence = words.join(' ');
+      sentence = sentence.charAt(0).toUpperCase() + sentence.slice(1) + '.';
+      return sentence;
+    }
+
+    // generate a paragraph (given number of sentences, and optional classic start)
+    function generateParagraph(sentenceCount, isFirstParagraph) {
+      let sentences = [];
+      for (let i = 0; i < sentenceCount; i++) {
+        sentences.push(generateSentence());
+      }
+      let paragraph = sentences.join(' ');
+      // if first paragraph and classic start checked, replace first few words
+      if (isFirstParagraph && classicCheck.checked) {
+        // "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        // we'll replace the beginning of the first sentence.
+        const classicStart = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
+        // Replace the first sentence with classic start? But we may have multiple sentences. We'll replace only first sentence of first paragraph.
+        const rest = paragraph.split('. ').slice(1).join('. ');
+        if (rest) {
+          paragraph = classicStart + ' ' + rest;
+        } else {
+          paragraph = classicStart;
+        }
+      }
+      return paragraph;
+    }
+
+    // generate full text
+    function generateText() {
+      const paraCount = parseInt(paragraphNumber.value, 10);
+      const sentPerPara = parseInt(sentencesNumber.value, 10);
+      const paragraphs = [];
+      for (let i = 0; i < paraCount; i++) {
+        const isFirst = (i === 0);
+        paragraphs.push(generateParagraph(sentPerPara, isFirst));
+      }
+      return paragraphs.join('\n\n');
+    }
+
+    // update output and stats
+    function updateOutput() {
+      const text = generateText();
+      outputDiv.innerText = text;
+
+      // word count (split by whitespace)
+      const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+      const chars = text.length;
+      wordStats.innerText = `📊 ${words} words · ${chars} characters`;
+
+      // pulse
+      outputDiv.classList.add('pulse');
+      setTimeout(() => outputDiv.classList.remove('pulse'), 300);
+    }
+
+    // generate button
+    generateBtn.addEventListener('click', updateOutput);
+
+    // copy button
+    copyBtn.addEventListener('click', () => {
+      const textToCopy = outputDiv.innerText;
+      if (!textToCopy || textToCopy === '✨ Your generated text will appear here') {
+        copyFeedback.innerText = 'Nothing!';
+        copyFeedback.classList.add('show');
+        setTimeout(() => copyFeedback.classList.remove('show'), 800);
+        return;
+      }
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        copyFeedback.innerText = 'Copied!';
+        copyFeedback.classList.add('show');
+        setTimeout(() => copyFeedback.classList.remove('show'), 1200);
+      }).catch(() => alert('Press Ctrl+C to copy'));
+    });
+
+    // reset to default
+    clearBtn.addEventListener('click', () => {
+      paragraphSlider.value = 1;
+      paragraphNumber.value = 1;
+      sentencesSlider.value = 5;
+      sentencesNumber.value = 5;
+      classicCheck.checked = true;
+      updateOutput();
+    });
+
+    // initial generate
+    updateOutput();
+
+    // optional: generate on slider change? we can let user click generate, but we can also auto-generate for convenience.
+    // We'll auto-generate when sliders/number change (debounced? simple)
+    paragraphSlider.addEventListener('input', updateOutput);
+    paragraphNumber.addEventListener('input', updateOutput);
+    sentencesSlider.addEventListener('input', updateOutput);
+    sentencesNumber.addEventListener('input', updateOutput);
+    classicCheck.addEventListener('change', updateOutput);
+  })();
+</script>
+
+<!-- 
+  ============================================================
+  TO LINK THIS TOOL FROM THE HUB (index.html):
+  Add this line inside the tool grid:
+    <a href="lorem-ipsum-generator.html">Lorem Ipsum Generator</a>
+  Make sure this file is saved as "lorem-ipsum-generator.html"
+  ============================================================
+-->
+</body>
+</html>

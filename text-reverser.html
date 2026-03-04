@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text Reverser · Toolvra</title>
+  <meta name="description" content="Reverse text: full string, words, word order, or lines. Copy & clear. Fast and clean.">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(145deg, #f0f5fa 0%, #e6edf4 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+    }
+
+    .tool-card {
+      max-width: 900px;
+      width: 100%;
+      background: #ffffff;
+      border-radius: 3rem;
+      padding: 2.5rem 2.5rem;
+      box-shadow: 0 20px 40px -12px rgba(0, 20, 40, 0.25), 0 2px 6px rgba(0,0,0,0.05);
+      border: 1px solid rgba(255,255,255,0.7);
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #e9eff7;
+      color: #1e3c5a;
+      text-decoration: none;
+      padding: 0.5rem 1.5rem;
+      border-radius: 40px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      border: 1px solid #cbd6e4;
+      margin-bottom: 1.8rem;
+      transition: 0.15s;
+    }
+    .back-link:hover {
+      background: #dce6f2;
+      border-color: #a0b9d6;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      background: linear-gradient(150deg, #1e2f4b, #2b4b7a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .input-group {
+      margin-bottom: 2rem;
+      text-align: left;
+    }
+    .input-group label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 0.4rem;
+      margin-left: 0.3rem;
+      color: #1e3c5a;
+      font-size: 1rem;
+    }
+    textarea {
+      width: 100%;
+      padding: 1rem 1.2rem;
+      background: #f9fcff;
+      border: 1.5px solid #dde5ef;
+      border-radius: 2rem;
+      font-size: 1rem;
+      color: #152b44;
+      transition: 0.2s;
+      min-height: 120px;
+      resize: vertical;
+    }
+    textarea:focus {
+      outline: none;
+      border-color: #2b4b7a;
+      box-shadow: 0 0 0 3px rgba(43, 75, 122, 0.2);
+    }
+
+    /* mode buttons */
+    .mode-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0 2rem;
+    }
+    .mode-btn {
+      background: #f9fcff;
+      border: 1.5px solid #dde5ef;
+      border-radius: 3rem;
+      padding: 0.8rem 0.5rem;
+      font-size: 1rem;
+      font-weight: 500;
+      color: #1e3a5f;
+      cursor: pointer;
+      transition: 0.1s;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    }
+    .mode-btn:hover {
+      background: #ffffff;
+      border-color: #2b4b7a;
+      color: #0b1f33;
+      transform: scale(1.02);
+    }
+    .mode-btn.active {
+      background: #2b4b7a;
+      border-color: #2b4b7a;
+      color: white;
+    }
+
+    /* output area */
+    .output-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.7rem;
+    }
+    .stats {
+      background: #e9eff7;
+      padding: 0.3rem 1.3rem;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      color: #1e3c5a;
+      border: 1px solid #cbd6e4;
+    }
+    #output {
+      background: #f9fcff;
+      border-radius: 2rem;
+      padding: 1.5rem;
+      min-height: 100px;
+      max-height: 200px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      border: 1px solid #dde5ef;
+      color: #152b44;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
+    }
+
+    .button-panel {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin: 2rem 0 1.5rem;
+    }
+    .btn {
+      padding: 0.8rem 2rem;
+      border: none;
+      border-radius: 3rem;
+      font-size: 1.1rem;
+      font-weight: 500;
+      background: #1e3a5f;
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      border: 1px solid #3f6190;
+      transition: 0.15s;
+      box-shadow: 0 4px 8px rgba(0,30,60,0.1);
+    }
+    .btn:hover {
+      background: #244c7a;
+      gap: 12px;
+      border-color: #6a93cf;
+    }
+    .btn-success {
+      background: #1f5e4f;
+      border-color: #2f8b76;
+    }
+    .btn-success:hover {
+      background: #287a68;
+    }
+    .btn-neutral {
+      background: #5f6f88;
+      border-color: #7c8fb0;
+    }
+    .btn-neutral:hover {
+      background: #7084a2;
+    }
+
+    .copy-feedback {
+      background: #1f5e4f;
+      color: white;
+      padding: 0.2rem 1rem;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      opacity: 0;
+      transition: 0.15s;
+      margin-left: 1rem;
+    }
+    .copy-feedback.show { opacity: 1; }
+
+    .footer-note {
+      margin-top: 2.5rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid #d0ddee;
+      text-align: center;
+      color: #5f738e;
+      font-size: 0.9rem;
+    }
+
+    .pulse {
+      animation: softPulse 0.3s ease-out;
+    }
+    @keyframes softPulse {
+      0% { background: #f9fcff; }
+      30% { background: #e1efff; }
+      100% { background: #f9fcff; }
+    }
+
+    @media (max-width: 550px) {
+      .tool-card { padding: 1.8rem; }
+      h1 { font-size: 2.2rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="tool-card">
+  <!-- back link to hub -->
+  <a href="index.html" class="back-link">← Back to Toolvra</a>
+
+  <h1>🔄 Text Reverser</h1>
+
+  <!-- text input -->
+  <div class="input-group">
+    <label>📝 Enter your text</label>
+    <textarea id="textInput" placeholder="Type or paste text...">Hello world! This is a test.</textarea>
+  </div>
+
+  <!-- reversal mode buttons -->
+  <div class="mode-buttons">
+    <button class="mode-btn active" id="modeFull">🔁 Full string</button>
+    <button class="mode-btn" id="modeWords">🔤 Reverse words</button>
+    <button class="mode-btn" id="modeWordOrder">📄 Reverse word order</button>
+    <button class="mode-btn" id="modeLines">📑 Reverse lines</button>
+  </div>
+
+  <!-- output area with stats -->
+  <div class="output-header">
+    <span class="stats" id="charStats">📊 0 characters</span>
+    <span class="copy-feedback" id="copyFeedback">Copied!</span>
+  </div>
+  <div id="output">✨ Your reversed text will appear here</div>
+
+  <!-- action buttons -->
+  <div class="button-panel">
+    <button class="btn" id="reverseBtn"><span>⚡</span> Reverse</button>
+    <button class="btn btn-success" id="copyBtn"><span>📋</span> Copy Output</button>
+    <button class="btn btn-neutral" id="clearBtn"><span>🧹</span> Clear All</button>
+  </div>
+
+  <!-- footer -->
+  <div class="footer-note">Toolvra · free online utilities</div>
+</div>
+
+<script>
+  (function() {
+    // DOM elements
+    const textarea = document.getElementById('textInput');
+    const outputDiv = document.getElementById('output');
+    const charStats = document.getElementById('charStats');
+    const reverseBtn = document.getElementById('reverseBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const copyFeedback = document.getElementById('copyFeedback');
+
+    // mode buttons
+    const modeFull = document.getElementById('modeFull');
+    const modeWords = document.getElementById('modeWords');
+    const modeWordOrder = document.getElementById('modeWordOrder');
+    const modeLines = document.getElementById('modeLines');
+    const modeBtns = [modeFull, modeWords, modeWordOrder, modeLines];
+
+    // current mode (default: full)
+    let currentMode = 'full';
+
+    // mode click handlers
+    modeFull.addEventListener('click', () => {
+      setActiveMode(modeFull);
+      currentMode = 'full';
+      reverseText();
+    });
+    modeWords.addEventListener('click', () => {
+      setActiveMode(modeWords);
+      currentMode = 'words';
+      reverseText();
+    });
+    modeWordOrder.addEventListener('click', () => {
+      setActiveMode(modeWordOrder);
+      currentMode = 'wordOrder';
+      reverseText();
+    });
+    modeLines.addEventListener('click', () => {
+      setActiveMode(modeLines);
+      currentMode = 'lines';
+      reverseText();
+    });
+
+    function setActiveMode(activeBtn) {
+      modeBtns.forEach(btn => btn.classList.remove('active'));
+      activeBtn.classList.add('active');
+    }
+
+    // reversal functions
+    function reverseFull(text) {
+      return text.split('').reverse().join('');
+    }
+
+    function reverseWords(text) {
+      // reverse each word individually, preserve order and spaces
+      return text.split(/(\s+)/).map(part => {
+        // if it's a word (not whitespace), reverse it
+        if (part.trim().length > 0) {
+          return part.split('').reverse().join('');
+        }
+        return part; // keep spaces unchanged
+      }).join('');
+    }
+
+    function reverseWordOrder(text) {
+      // reverse the order of words, but keep words themselves intact
+      // split by spaces, but preserve multiple spaces? simpler: split by whitespace and join with space
+      // but we want to preserve spaces as much as possible. We'll use regex to split keeping spaces.
+      const parts = text.split(/(\s+)/);
+      const words = [];
+      const spaces = [];
+      for (let i = 0; i < parts.length; i++) {
+        if (i % 2 === 0) words.push(parts[i]); // word part (may be empty)
+        else spaces.push(parts[i]); // space part
+      }
+      // reverse words, then interleave with spaces (if any)
+      words.reverse();
+      let result = '';
+      for (let i = 0; i < words.length; i++) {
+        result += words[i];
+        if (i < spaces.length) result += spaces[i];
+      }
+      return result;
+    }
+
+    function reverseLines(text) {
+      return text.split('\n').reverse().join('\n');
+    }
+
+    // main reverse function
+    function reverseText() {
+      const input = textarea.value;
+      let output = '';
+      switch (currentMode) {
+        case 'full': output = reverseFull(input); break;
+        case 'words': output = reverseWords(input); break;
+        case 'wordOrder': output = reverseWordOrder(input); break;
+        case 'lines': output = reverseLines(input); break;
+        default: output = reverseFull(input);
+      }
+      outputDiv.innerText = output || '␀ (empty)';
+      // update stats
+      const len = output.length;
+      charStats.innerText = `📊 ${len} character${len !== 1 ? 's' : ''}`;
+      // pulse
+      outputDiv.classList.add('pulse');
+      setTimeout(() => outputDiv.classList.remove('pulse'), 300);
+    }
+
+    // reverse button
+    reverseBtn.addEventListener('click', reverseText);
+
+    // copy output
+    copyBtn.addEventListener('click', () => {
+      const textToCopy = outputDiv.innerText;
+      if (!textToCopy || textToCopy === '✨ Your reversed text will appear here' || textToCopy === '␀ (empty)') {
+        copyFeedback.innerText = 'Nothing!';
+        copyFeedback.classList.add('show');
+        setTimeout(() => copyFeedback.classList.remove('show'), 800);
+        return;
+      }
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        copyFeedback.innerText = 'Copied!';
+        copyFeedback.classList.add('show');
+        setTimeout(() => copyFeedback.classList.remove('show'), 1200);
+      }).catch(() => alert('Press Ctrl+C to copy'));
+    });
+
+    // clear all
+    clearBtn.addEventListener('click', () => {
+      textarea.value = '';
+      outputDiv.innerText = '✨ Cleared — ready for new text';
+      charStats.innerText = '📊 0 characters';
+      outputDiv.classList.add('pulse');
+      setTimeout(() => outputDiv.classList.remove('pulse'), 300);
+    });
+
+    // initial reverse (to show something)
+    reverseText();
+
+    // optional: press Ctrl+Enter in textarea to reverse
+    textarea.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        reverseBtn.click();
+      }
+    });
+  })();
+</script>
+
+<!-- 
+  ============================================================
+  TO LINK THIS TOOL FROM THE HUB (index.html):
+  Add this line inside the tool grid:
+    <a href="text-reverser.html">Text Reverser</a>
+  Make sure this file is saved as "text-reverser.html"
+  ============================================================
+-->
+</body>
+</html>

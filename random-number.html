@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random Number Generator · Toolvra</title>
+  <meta name="description" content="Generate random numbers with custom range, integer/decimal, history and copy. Clean and fast.">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(145deg, #f0f5fa 0%, #e6edf4 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+    }
+
+    /* main card – consistent with other tools */
+    .tool-card {
+      max-width: 700px;
+      width: 100%;
+      background: #ffffff;
+      border-radius: 3rem;
+      padding: 2.5rem 2.5rem;
+      box-shadow: 0 20px 40px -12px rgba(0, 20, 40, 0.25), 0 2px 6px rgba(0,0,0,0.05);
+      border: 1px solid rgba(255,255,255,0.7);
+    }
+
+    /* back link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #e9eff7;
+      color: #1e3c5a;
+      text-decoration: none;
+      padding: 0.5rem 1.5rem;
+      border-radius: 40px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      border: 1px solid #cbd6e4;
+      margin-bottom: 1.8rem;
+      transition: 0.15s;
+    }
+    .back-link:hover {
+      background: #dce6f2;
+      border-color: #a0b9d6;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      background: linear-gradient(150deg, #1e2f4b, #2b4b7a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* input row */
+    .range-row {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .input-group {
+      flex: 1 1 200px;
+    }
+    .input-group label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 0.3rem;
+      margin-left: 0.3rem;
+      color: #1e3c5a;
+      font-size: 0.9rem;
+    }
+    .input-group input {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      background: #f9fcff;
+      border: 1.5px solid #dde5ef;
+      border-radius: 2rem;
+      font-size: 1rem;
+      color: #152b44;
+      transition: 0.2s;
+    }
+    .input-group input:focus {
+      outline: none;
+      border-color: #2b4b7a;
+      box-shadow: 0 0 0 3px rgba(43, 75, 122, 0.2);
+    }
+
+    /* options */
+    .options-row {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    .option-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #f9fcff;
+      border: 1px solid #dde5ef;
+      border-radius: 2rem;
+      padding: 0.5rem 1.2rem;
+    }
+    .option-item input[type="checkbox"] {
+      width: 1.2rem;
+      height: 1.2rem;
+      accent-color: #2b4b7a;
+      cursor: pointer;
+    }
+    .option-item label {
+      font-weight: 500;
+      color: #1e3c5a;
+      cursor: pointer;
+    }
+
+    /* result area */
+    .result-area {
+      background: #f9fcff;
+      border-radius: 2rem;
+      padding: 2rem;
+      border: 1px solid #dde5ef;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    #result {
+      font-size: 3.5rem;
+      font-weight: 600;
+      color: #1e3a5f;
+      line-height: 1.2;
+      word-break: break-word;
+    }
+
+    /* history */
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .history-title {
+      font-weight: 500;
+      color: #1e3c5a;
+    }
+    .history-list {
+      background: #f9fcff;
+      border-radius: 2rem;
+      padding: 1rem 1.5rem;
+      min-height: 3.5rem;
+      border: 1px solid #dde5ef;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem 1.2rem;
+      align-items: center;
+    }
+    .history-item {
+      background: #e9eff7;
+      padding: 0.3rem 1rem;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: 500;
+      color: #1e3c5a;
+      border: 1px solid #cbd6e4;
+    }
+
+    /* buttons */
+    .button-panel {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin: 2rem 0 1.5rem;
+    }
+    .btn {
+      padding: 0.8rem 2rem;
+      border: none;
+      border-radius: 3rem;
+      font-size: 1.1rem;
+      font-weight: 500;
+      background: #1e3a5f;
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      border: 1px solid #3f6190;
+      transition: 0.15s;
+      box-shadow: 0 4px 8px rgba(0,30,60,0.1);
+    }
+    .btn:hover {
+      background: #244c7a;
+      gap: 12px;
+      border-color: #6a93cf;
+    }
+    .btn-success {
+      background: #1f5e4f;
+      border-color: #2f8b76;
+    }
+    .btn-success:hover {
+      background: #287a68;
+    }
+    .btn-neutral {
+      background: #5f6f88;
+      border-color: #7c8fb0;
+    }
+    .btn-neutral:hover {
+      background: #7084a2;
+    }
+
+    .copy-feedback {
+      background: #1f5e4f;
+      color: white;
+      padding: 0.2rem 1rem;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      opacity: 0;
+      transition: 0.15s;
+      margin-left: 1rem;
+    }
+    .copy-feedback.show { opacity: 1; }
+
+    .footer-note {
+      margin-top: 2.5rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid #d0ddee;
+      text-align: center;
+      color: #5f738e;
+      font-size: 0.9rem;
+    }
+
+    .pulse {
+      animation: softPulse 0.3s ease-out;
+    }
+    @keyframes softPulse {
+      0% { background: #f9fcff; }
+      30% { background: #e1efff; }
+      100% { background: #f9fcff; }
+    }
+
+    @media (max-width: 550px) {
+      .tool-card { padding: 1.8rem; }
+      h1 { font-size: 2.2rem; }
+      #result { font-size: 2.8rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="tool-card">
+  <!-- back link to hub -->
+  <a href="index.html" class="back-link">← Back to Toolvra</a>
+
+  <h1>🎲 Random Number Generator</h1>
+
+  <!-- min/max inputs -->
+  <div class="range-row">
+    <div class="input-group">
+      <label for="min">Minimum</label>
+      <input type="number" id="min" value="1" step="any">
+    </div>
+    <div class="input-group">
+      <label for="max">Maximum</label>
+      <input type="number" id="max" value="100" step="any">
+    </div>
+  </div>
+
+  <!-- decimal toggle -->
+  <div class="options-row">
+    <div class="option-item">
+      <input type="checkbox" id="decimalMode">
+      <label for="decimalMode">Allow decimals</label>
+    </div>
+    <div class="option-item">
+      <span style="color:#1e3c5a;">(step 0.01)</span>
+    </div>
+  </div>
+
+  <!-- result display -->
+  <div class="result-area" id="resultArea">
+    <div id="result">42</div>
+  </div>
+
+  <!-- history -->
+  <div class="history-header">
+    <span class="history-title">📋 History (last 5)</span>
+    <span class="copy-feedback" id="copyFeedback">Copied!</span>
+  </div>
+  <div class="history-list" id="historyList">
+    <span class="history-item">42</span>
+  </div>
+
+  <!-- buttons -->
+  <div class="button-panel">
+    <button class="btn" id="generateBtn"><span>⚡</span> Generate</button>
+    <button class="btn btn-success" id="copyBtn"><span>📋</span> Copy Number</button>
+    <button class="btn btn-neutral" id="clearHistoryBtn"><span>🧹</span> Clear History</button>
+  </div>
+
+  <!-- footer -->
+  <div class="footer-note">Toolvra · free online utilities</div>
+</div>
+
+<script>
+  (function() {
+    // DOM elements
+    const minInput = document.getElementById('min');
+    const maxInput = document.getElementById('max');
+    const decimalCheck = document.getElementById('decimalMode');
+    const resultDiv = document.getElementById('result');
+    const resultArea = document.getElementById('resultArea');
+    const generateBtn = document.getElementById('generateBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+    const historyList = document.getElementById('historyList');
+    const copyFeedback = document.getElementById('copyFeedback');
+
+    // history array (max 5 items)
+    let history = [];
+
+    // load initial example
+    function addToHistory(num) {
+      let formatted = decimalCheck.checked ? parseFloat(num).toFixed(2) : Math.floor(num);
+      // avoid duplicate consecutive? we just add
+      history.unshift(formatted);
+      if (history.length > 5) history.pop();
+      renderHistory();
+    }
+
+    function renderHistory() {
+      historyList.innerHTML = '';
+      if (history.length === 0) {
+        historyList.innerHTML = '<span class="history-item" style="background:transparent; border:none; color:#7c8fb0;">No history</span>';
+        return;
+      }
+      history.forEach(item => {
+        const span = document.createElement('span');
+        span.className = 'history-item';
+        span.innerText = item;
+        historyList.appendChild(span);
+      });
+    }
+
+    // generate random number based on current settings
+    function generateRandom() {
+      let min = parseFloat(minInput.value);
+      let max = parseFloat(maxInput.value);
+
+      // validate
+      if (isNaN(min)) min = 1;
+      if (isNaN(max)) max = 100;
+      if (min > max) {
+        // swap
+        [min, max] = [max, min];
+        minInput.value = min;
+        maxInput.value = max;
+      }
+
+      let random;
+      if (decimalCheck.checked) {
+        random = Math.random() * (max - min) + min;
+        // round to 2 decimals for display
+        random = Math.round(random * 100) / 100;
+      } else {
+        random = Math.floor(Math.random() * (Math.floor(max) - Math.ceil(min) + 1)) + Math.ceil(min);
+        // ensure within integer range
+        if (random < min) random = min;
+        if (random > max) random = max;
+      }
+      return random;
+    }
+
+    // update result and history
+    function updateResult() {
+      const num = generateRandom();
+      let display = decimalCheck.checked ? num.toFixed(2) : num;
+      resultDiv.innerText = display;
+      addToHistory(num);
+      // pulse effect
+      resultArea.classList.add('pulse');
+      setTimeout(() => resultArea.classList.remove('pulse'), 300);
+    }
+
+    // initial generation
+    updateResult();
+
+    // generate button
+    generateBtn.addEventListener('click', updateResult);
+
+    // copy button
+    copyBtn.addEventListener('click', () => {
+      const textToCopy = resultDiv.innerText;
+      if (!textToCopy) return;
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        copyFeedback.classList.add('show');
+        setTimeout(() => copyFeedback.classList.remove('show'), 1200);
+      }).catch(() => alert('Press Ctrl+C to copy'));
+    });
+
+    // clear history
+    clearHistoryBtn.addEventListener('click', () => {
+      history = [];
+      renderHistory();
+    });
+
+    // when decimal mode toggled, we might want to refresh current result? not necessary, but we can regenerate to show decimal if needed.
+    decimalCheck.addEventListener('change', () => {
+      // optionally regenerate a new number to reflect decimal mode
+      updateResult();
+    });
+
+    // also if min/max change, user likely expects a new number? we can auto-generate or not. Better to let them click generate. We'll not auto-generate on input change.
+  })();
+</script>
+
+<!-- 
+  ============================================================
+  TO LINK THIS TOOL FROM THE HUB (index.html):
+  Add this line inside the tool grid:
+    <a href="random-number-generator.html">Random Number Generator</a>
+  Make sure this file is saved as "random-number-generator.html"
+  ============================================================
+-->
+</body>
+</html>

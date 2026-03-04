@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Code Generator · Toolvra</title>
+  <meta name="description" content="Generate QR codes with custom size, margin, error correction. Download as PNG. Clean and fast.">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(145deg, #f0f5fa 0%, #e6edf4 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+    }
+
+    .tool-card {
+      max-width: 700px;
+      width: 100%;
+      background: #ffffff;
+      border-radius: 3rem;
+      padding: 2.5rem 2.5rem;
+      box-shadow: 0 20px 40px -12px rgba(0, 20, 40, 0.25), 0 2px 6px rgba(0,0,0,0.05);
+      border: 1px solid rgba(255,255,255,0.7);
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #e9eff7;
+      color: #1e3c5a;
+      text-decoration: none;
+      padding: 0.5rem 1.5rem;
+      border-radius: 40px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      border: 1px solid #cbd6e4;
+      margin-bottom: 1.8rem;
+      transition: 0.15s;
+    }
+    .back-link:hover {
+      background: #dce6f2;
+      border-color: #a0b9d6;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      background: linear-gradient(150deg, #1e2f4b, #2b4b7a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .input-group {
+      margin-bottom: 1.8rem;
+      text-align: left;
+    }
+    .input-group label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 0.4rem;
+      margin-left: 0.3rem;
+      color: #1e3c5a;
+      font-size: 0.95rem;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 0.9rem 1.2rem;
+      background: #f9fcff;
+      border: 1.5px solid #dde5ef;
+      border-radius: 2rem;
+      font-size: 1rem;
+      color: #152b44;
+      transition: 0.2s;
+    }
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #2b4b7a;
+      box-shadow: 0 0 0 3px rgba(43, 75, 122, 0.2);
+    }
+
+    /* options grid */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1.2rem;
+      margin-bottom: 2rem;
+    }
+    .option-item {
+      text-align: left;
+    }
+    .option-item label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 0.3rem;
+      margin-left: 0.3rem;
+      color: #1e3c5a;
+      font-size: 0.9rem;
+    }
+    .slider-row {
+      display: flex;
+      gap: 0.8rem;
+      align-items: center;
+    }
+    .slider-row input[type="range"] {
+      flex: 1;
+      height: 8px;
+      background: #dde5ef;
+      border-radius: 20px;
+      -webkit-appearance: none;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 22px;
+      height: 22px;
+      background: #2b4b7a;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .slider-row input[type="number"] {
+      width: 70px;
+      text-align: center;
+      padding: 0.5rem;
+      background: #f9fcff;
+      border: 1.5px solid #dde5ef;
+      border-radius: 2rem;
+      font-size: 0.9rem;
+      color: #152b44;
+    }
+    select {
+      width: 100%;
+      padding: 0.7rem 1rem;
+      background: #f9fcff;
+      border: 1.5px solid #dde5ef;
+      border-radius: 2rem;
+      font-size: 0.9rem;
+      color: #152b44;
+    }
+
+    /* qr display */
+    .qr-area {
+      background: #f9fcff;
+      border-radius: 2rem;
+      padding: 2rem;
+      margin: 2rem 0 1.5rem;
+      border: 1px solid #dde5ef;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 240px;
+    }
+    #qrImage {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+      transition: opacity 0.2s;
+    }
+    .placeholder {
+      color: #7c8fb0;
+      font-size: 1rem;
+      background: #e9eff7;
+      padding: 0.8rem 1.5rem;
+      border-radius: 40px;
+      border: 1px solid #cbd6e4;
+    }
+
+    .button-panel {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin: 2rem 0 1.5rem;
+    }
+    .btn {
+      padding: 0.8rem 2rem;
+      border: none;
+      border-radius: 3rem;
+      font-size: 1.1rem;
+      font-weight: 500;
+      background: #1e3a5f;
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      border: 1px solid #3f6190;
+      transition: 0.15s;
+      box-shadow: 0 4px 8px rgba(0,30,60,0.1);
+    }
+    .btn:hover {
+      background: #244c7a;
+      gap: 12px;
+      border-color: #6a93cf;
+    }
+    .btn-success {
+      background: #1f5e4f;
+      border-color: #2f8b76;
+    }
+    .btn-success:hover {
+      background: #287a68;
+    }
+    .btn-neutral {
+      background: #5f6f88;
+      border-color: #7c8fb0;
+    }
+    .btn-neutral:hover {
+      background: #7084a2;
+    }
+
+    .copy-feedback {
+      background: #1f5e4f;
+      color: white;
+      padding: 0.2rem 1rem;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      opacity: 0;
+      transition: 0.15s;
+      margin-left: 1rem;
+    }
+    .copy-feedback.show { opacity: 1; }
+
+    .footer-note {
+      margin-top: 2.5rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid #d0ddee;
+      text-align: center;
+      color: #5f738e;
+      font-size: 0.9rem;
+    }
+
+    .pulse {
+      animation: softPulse 0.3s ease-out;
+    }
+    @keyframes softPulse {
+      0% { background: #f9fcff; }
+      30% { background: #e1efff; }
+      100% { background: #f9fcff; }
+    }
+
+    @media (max-width: 550px) {
+      .tool-card { padding: 1.8rem; }
+      h1 { font-size: 2.2rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="tool-card">
+  <!-- back link to hub -->
+  <a href="index.html" class="back-link">← Back to Toolvra</a>
+
+  <h1>📱 QR Code Generator</h1>
+
+  <!-- text input -->
+  <div class="input-group">
+    <label>🔤 Text or URL</label>
+    <input type="text" id="textInput" placeholder="Enter any text or link..." value="https://toolvra.com">
+  </div>
+
+  <!-- options grid -->
+  <div class="options-grid">
+    <div class="option-item">
+      <label>📐 Size (px)</label>
+      <div class="slider-row">
+        <input type="range" id="sizeSlider" min="100" max="500" value="200" step="10">
+        <input type="number" id="sizeNumber" min="100" max="500" value="200" step="10">
+      </div>
+    </div>
+    <div class="option-item">
+      <label>🔲 Margin (0–4)</label>
+      <div class="slider-row">
+        <input type="range" id="marginSlider" min="0" max="4" value="1" step="1">
+        <input type="number" id="marginNumber" min="0" max="4" value="1" step="1">
+      </div>
+    </div>
+    <div class="option-item">
+      <label>🛡️ Error correction</label>
+      <select id="eccSelect">
+        <option value="L">L (7%)</option>
+        <option value="M" selected>M (15%)</option>
+        <option value="Q">Q (25%)</option>
+        <option value="H">H (30%)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- qr display area -->
+  <div class="qr-area" id="qrArea">
+    <img id="qrImage" style="display: none;">
+    <div class="placeholder" id="qrPlaceholder">✨ Your QR code will appear here</div>
+  </div>
+
+  <!-- buttons -->
+  <div class="button-panel">
+    <button class="btn" id="generateBtn"><span>⚡</span> Generate</button>
+    <button class="btn btn-success" id="downloadBtn"><span>⬇️</span> Download PNG</button>
+    <button class="btn btn-neutral" id="clearBtn"><span>🧹</span> Clear</button>
+  </div>
+
+  <!-- footer -->
+  <div class="footer-note">Toolvra · free online utilities</div>
+</div>
+
+<script>
+  (function() {
+    // DOM elements
+    const textInput = document.getElementById('textInput');
+    const sizeSlider = document.getElementById('sizeSlider');
+    const sizeNumber = document.getElementById('sizeNumber');
+    const marginSlider = document.getElementById('marginSlider');
+    const marginNumber = document.getElementById('marginNumber');
+    const eccSelect = document.getElementById('eccSelect');
+    const generateBtn = document.getElementById('generateBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const qrImage = document.getElementById('qrImage');
+    const qrPlaceholder = document.getElementById('qrPlaceholder');
+    const qrArea = document.getElementById('qrArea');
+
+    // sync slider + number
+    function syncSize() {
+      sizeNumber.value = sizeSlider.value;
+    }
+    function syncSizeFromNumber() {
+      let val = parseInt(sizeNumber.value, 10);
+      if (isNaN(val) || val < 100) sizeNumber.value = 100;
+      if (val > 500) sizeNumber.value = 500;
+      sizeSlider.value = sizeNumber.value;
+    }
+    sizeSlider.addEventListener('input', syncSize);
+    sizeNumber.addEventListener('input', syncSizeFromNumber);
+
+    function syncMargin() {
+      marginNumber.value = marginSlider.value;
+    }
+    function syncMarginFromNumber() {
+      let val = parseInt(marginNumber.value, 10);
+      if (isNaN(val) || val < 0) marginNumber.value = 0;
+      if (val > 4) marginNumber.value = 4;
+      marginSlider.value = marginNumber.value;
+    }
+    marginSlider.addEventListener('input', syncMargin);
+    marginNumber.addEventListener('input', syncMarginFromNumber);
+
+    // generate QR code URL
+    function getQRUrl() {
+      const text = textInput.value.trim();
+      if (!text) return null;
+      const size = sizeNumber.value;
+      const margin = marginNumber.value;
+      const ecc = eccSelect.value;
+      // API: https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=Hello&margin=1&ecc=M
+      return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(text)}&margin=${margin}&ecc=${ecc}`;
+    }
+
+    // generate and display QR
+    function generateQR() {
+      const url = getQRUrl();
+      if (!url) {
+        // hide image, show placeholder
+        qrImage.style.display = 'none';
+        qrPlaceholder.style.display = 'block';
+        qrPlaceholder.innerText = '⚠️ Enter text or URL';
+        return;
+      }
+      // set image src and show it
+      qrImage.src = url;
+      qrImage.style.display = 'block';
+      qrPlaceholder.style.display = 'none';
+      // pulse effect
+      qrArea.classList.add('pulse');
+      setTimeout(() => qrArea.classList.remove('pulse'), 300);
+    }
+
+    // download QR as PNG
+    function downloadQR() {
+      const url = getQRUrl();
+      if (!url) {
+        alert('Please enter text first.');
+        return;
+      }
+      // fetch image as blob
+      fetch(url)
+        .then(response => response.blob())
+        .then(blob => {
+          const blobUrl = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = blobUrl;
+          a.download = `qrcode-${Date.now()}.png`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(blobUrl);
+        })
+        .catch(err => {
+          alert('Failed to download. Try again.');
+        });
+    }
+
+    // clear everything
+    function clearAll() {
+      textInput.value = '';
+      // reset to defaults (optional)
+      sizeSlider.value = 200;
+      sizeNumber.value = 200;
+      marginSlider.value = 1;
+      marginNumber.value = 1;
+      eccSelect.value = 'M';
+      // hide image, show placeholder
+      qrImage.style.display = 'none';
+      qrPlaceholder.style.display = 'block';
+      qrPlaceholder.innerText = '✨ Your QR code will appear here';
+    }
+
+    // event listeners
+    generateBtn.addEventListener('click', generateQR);
+    downloadBtn.addEventListener('click', downloadQR);
+    clearBtn.addEventListener('click', clearAll);
+
+    // optional: generate on slider/number change (enable if you want live update)
+    // We'll keep it manual via generate button, but you can uncomment:
+    // sizeSlider.addEventListener('input', generateQR);
+    // sizeNumber.addEventListener('input', generateQR);
+    // marginSlider.addEventListener('input', generateQR);
+    // marginNumber.addEventListener('input', generateQR);
+    // eccSelect.addEventListener('change', generateQR);
+    // textInput.addEventListener('input', generateQR); // might be too frequent
+
+    // initial generate (show something)
+    generateQR();
+  })();
+</script>
+
+<!-- 
+  ============================================================
+  TO LINK THIS TOOL FROM THE HUB (index.html):
+  Add this line inside the tool grid:
+    <a href="qr-generator.html">QR Code Generator</a>
+  Make sure this file is saved as "qr-generator.html"
+  ============================================================
+-->
+</body>
+</html>
